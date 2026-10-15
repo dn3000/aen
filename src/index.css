@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Fonts ─────────────────────────────────────────────────────────────── */
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+
+/* ─── Tailwind Design Tokens ─────────────────────────────────────────────── */
+@theme {
+  /* Legacy tokens — kept so existing components don't break */
+  --color-green-primary: #294d2d;
+  --color-green-dark:    #1a3320;
+  --color-green-light:   #3d7343;
+  --color-cream:         #faf6ef;
+  --color-cream-dark:    #f0e9dc;
+
+  /* New palette tokens */
+  --color-primary:       #1a3a1f;
+  --color-primary-mid:   #294d2d;
+  --color-primary-light: #3d6b43;
+  --color-gold:          #c8a84b;
+  --color-gold-light:    #e8c97a;
+
+  /* Typography */
+  --font-display: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ─── Semantic CSS Variables (Light Mode) ───────────────────────────────── */
+:root {
+  --color-surface:        #D8DBD9;
+  --color-surface-2:      #f7f9f6;
+  --color-text-primary:   #0f1f12;
+  --color-text-secondary: #4a5c4d;
+  --color-text-muted:     #8a9e8d;
+  --color-border:         rgba(41, 77, 45, 0.12);
+  --color-glass:          rgba(255, 255, 255, 0.72);
+  --color-glass-border:   rgba(255, 255, 255, 0.40);
+  --color-success:        #2d7a3a;
+  --color-warning:        #c8a84b;
+  --color-danger:         #c0392b;
+  --color-info:           #2471a3;
+
+  --gradient-hero:  linear-gradient(135deg, #1a3a1f 0%, #294d2d 50%, #3d6b43 100%);
+  --gradient-gold:  linear-gradient(135deg, #A8863A 0%, #C8A84B 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  --gradient-mesh:  radial-gradient(at 40% 20%, #294d2d 0px, transparent 50%),
+                    radial-gradient(at 80% 0%, rgba(200,168,75,0.13) 0px, transparent 50%),
+                    radial-gradient(at 0% 50%, #1a3a1f 0px, transparent 50%);
+}
+
+/* ─── Dark Mode Overrides ───────────────────────────────────────────────── */
+.dark {
+  --color-surface:        #0F1A10;
+  --color-surface-2:      #1B2A1C;
+  --color-text-primary:   #FFFFFF;
+  --color-text-secondary: #C4D4C6;
+  --color-text-muted:     #7A9E7D;
+  --color-border:         rgba(255, 255, 255, 0.06);
+  --color-glass:          #1B2A1C;
+  --color-glass-border:   rgba(255, 255, 255, 0.06);
+  --color-success:        #4A8C52;
+  --color-warning:        #B08D57;
+  --color-danger:         #e74c3c;
+  --color-info:           #3498db;
+  --color-gold:           #B08D57;
+  --color-gold-light:     #D4A96A;
+
+  --gradient-hero:  linear-gradient(135deg, #0d1f0f 0%, #1a3a1f 50%, #294d2d 100%);
+  --gradient-gold:  linear-gradient(135deg, #B08D57 0%, #D4A96A 100%);
+  --gradient-mesh:  radial-gradient(at 40% 20%, #1a3a1f 0px, transparent 50%),
+                    radial-gradient(at 80% 0%, rgba(176,141,87,0.08) 0px, transparent 50%),
+                    radial-gradient(at 0% 50%, #0d1f0f 0px, transparent 50%);
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Glassmorphism Utilities ───────────────────────────────────────────── */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+}
+
+.glass-card {
+  background: var(--color-glass);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.dark .glass-card {
+  background: var(--color-glass);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-card {
+    background: var(--color-surface);
+  }
+}
+
+/* ─── Dashboard Greeting Card ───────────────────────────────────────────── */
+.greeting-card { background: var(--gradient-gold); }
+.dark .greeting-card { background: var(--gradient-hero); }
+
+/* ─── Gradient Text ─────────────────────────────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── SDG Marquee ───────────────────────────────────────────────────────── */
+@keyframes sdg-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.sdg-marquee-track {
+  animation: sdg-marquee 45s linear infinite;
+}
+.sdg-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Partner Marquee ───────────────────────────────────────────────────── */
+@keyframes partner-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.partner-marquee-track {
+  animation: partner-marquee 30s linear infinite;
+}
+.partner-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Reduced Motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

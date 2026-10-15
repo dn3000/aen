@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Reads the caller's own farmer doc to check role.
+    // get() is a privileged rules read — not subject to the rules below.
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/farmers/$(request.auth.uid))
+        && get(/databases/$(database)/documents/farmers/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ── Farmer profiles ─────────────────────────────────────────────────────
+    // Strict: a farmer can only read/write their own document.
+    // Admins can read and update any farmer doc (e.g. to grant admin role).
+
+    match /farmers/{uid} {
+      allow read:   if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+
+      // Subcollections: farmProfile, infrastructure, marketProfile, empowerment
+      match /{subcollection}/{docId} {
+        allow read:  if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    // ── Wholesale produce markets ────────────────────────────────────────────
+    // Used by PriceIndex market selector and AdminPriceForm market picker.
+    // Read: any authenticated user. Write: admin only.
+
+    match /produce-markets/{docId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── Weekly price data ────────────────────────────────────────────────────
+    // Read: any authenticated user. Write: admin only.
+
+    match /markets-prices/{marketId}/weeks/{weekId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── Verified buyer listings ──────────────────────────────────────────────
+    // Managed entirely by admins. Farmers read-only.
+
+    match /markets/{docId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── Farmer produce listings ──────────────────────────────────────────────
+    // Any authenticated farmer can post. Farmers can only modify/delete their own.
+
+    match /listings/{docId} {
+      allow read:   if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow update: if isSignedIn()
+                    && resource.data.uid == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.uid == request.auth.uid
+                    || isAdmin();
+    }
+
+    // ── Newsletter subscribers ───────────────────────────────────────────────
+    // Public subscribe (anyone can POST their email).
+    // Only admin can read the list, update, or delete entries.
+
+    match /newsletter/{email} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

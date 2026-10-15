@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <!-- Leaf icon -->
+  <path d="M20 38 C20 38 8 28 10 16 C10 16 20 14 28 22 C36 30 34 42 34 42 C34 42 22 44 20 38Z" fill="#3d7a44"/>
+  <path d="M20 38 C20 38 14 30 16 22" stroke="#294d2d" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="10" r="4" fill="#b99029" opacity="0.85"/>
+  <!-- AEN wordmark -->
+  <text x="46" y="34" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="26" letter-spacing="2" fill="#b99029">AEN</text>
+</svg>
